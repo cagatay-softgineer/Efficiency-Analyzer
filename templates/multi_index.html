@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AISOFT</title>
+    <link rel="icon" href="https://www.aisofttechnology.com/wp-content/uploads/2023/11/cropped-aisoft_fav-192x192.png" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 90vh;
+            background: url('https://www.aisofttechnology.com/wp-content/uploads/2023/12/aisoft.png') center top no-repeat;
+            background-size: 400px;
+            overflow: hidden;
+            user-select: none;
+        }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            height: 90vh;
+        }
+        
+        .cctv-container {
+            display: grid;
+            grid-template-rows: repeat(2, 1fr);
+            /* Two rows with equal height */
+            grid-template-columns: repeat(2, 1fr);
+            /* Two columns with equal width */
+            gap: 10px;
+            /* Adjust the gap between images */
+            height: 90vh;
+        }
+        
+        .video-feed-cctv {
+            width: 40vw;
+            height: 40vh;
+            margin: 0 80px;
+        }
+        
+        .video-feed {
+            width: 40vw;
+            /* Each image takes up half of the viewport width */
+            height: 40vh;
+            /* Full viewport height */
+            margin: 0 80px;
+            /* Adjust margin from sides */
+        }
+        
+        .video-feed1 {
+            align-self: flex-start;
+            /* Align to the top */
+            margin-right: auto;
+            /* Push to the left */
+        }
+        
+        .video-feed2 {
+            align-self: flex-start;
+            /* Align to the top */
+            margin-left: auto;
+            /* Push to the right */
+        }
+        
+        .video-feed3 {
+            align-self: flex-start;
+            /* Align to the top */
+            margin-right: auto;
+            /* Push to the left */
+        }
+        
+        .video-feed4 {
+            align-self: flex-start;
+            /* Align to the top */
+            margin-left: auto;
+            /* Push to the right */
+        }
+        
+        .show-details-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #1cd422;
+            color: white;
+            padding: 5px 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .stop-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgb(230, 0, 0);
+            color: white;
+            padding: 5px 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            /* Smooth transition effect for background-color */
+        }
+        /* Hover state */
+        
+        .stop-btn:hover {
+            background-color: rgb(170, 0, 0);
+            /* Change background color on hover */
+        }
+        /* Active state (when the button is clicked) */
+        
+        .stop-btn:active {
+            background-color: rgb(130, 0, 0);
+            /* Change background color when clicked */
+        }
+        
+        .status-message {
+            position: fixed;
+            top: 30px;
+            left: 10px;
+            background-color: #303030;
+            /* Green background color */
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: help;
+            /* Padding */
+            /*display: none;*/
+            /* Initially hide the message */
+        }
+    </style>
+
+    <script>
+        window.addEventListener("blur", function() {
+            document.title = "AISOFT - Unfocused";
+        });
+        window.addEventListener("focus", function() {
+            document.title = "AISOFT";
+        });
+    </script>
+
+</head>
+
+<body>
+    <form id="stopServerForm" action="/stop-server" method="post">
+        <button class="stop-btn" type="button" onclick="stopServer()">Stop Server</button>
+    </form>
+    <p class="status-message" id="statusMessage">Server Status</p>
+    <br><br><br> <br><br><br>
+
+    <div class="cctv-container">
+        <img src="{{ url_for('video_feed1') }}" alt="Video Feed 1" class="video-feed-cctv video-feed1">
+        <img src="{{ url_for('video_feed2') }}" alt="Video Feed 2" class="video-feed-cctv video-feed2">
+        <img src="{{ url_for('video_feed3') }}" alt="Video Feed 3" class="video-feed-cctv video-feed3">
+        <img src="{{ url_for('video_feed4') }}" alt="Video Feed 4" class="video-feed-cctv video-feed4">
+    </div>
+
+    <script>
+        function stopServer() {
+            // Disable the button to prevent multiple submissions
+            document.getElementById('stopServerForm').querySelector('button').disabled = true;
+
+            // Show status message
+            document.getElementById('statusMessage').innerText = 'Server is shutting down...';
+
+            // Send asynchronous POST request to stop the server
+            fetch('/stop-server', {
+                    method: 'POST'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error('Failed to stop the server');
+                    }
+                })
+                .then(message => {
+                    // Update status message after stopping the server
+                    document.getElementById('statusMessage').innerText = message;
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById('statusMessage').innerText = 'Error stopping the server';
+                });
+        }
+    </script>
+</body>
+
+</html>
